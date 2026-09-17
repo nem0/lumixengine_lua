@@ -18,7 +18,7 @@ if plugin "lua" then
 		"src/**.cpp",
 		"genie.lua"
 	}
-	includedirs { "../plugins/lua/external/luau/include", "../src", "../plugins/lua/src" }
+	includedirs { "external/luau/include", "../../src", "src" }
 	defines { "BUILDING_LUA" }
 	dynamic_link_plugin { "core", "engine" }
 
