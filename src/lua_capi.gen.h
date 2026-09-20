@@ -517,14 +517,22 @@ namespace Lumix {
 }
 
 namespace Lumix {
-	int AudioModule_play(lua_State* L) {
+	int AudioModule_play3D(lua_State* L) {
 		LuaWrapper::checkTableArg(L, 1);
 		AudioModule* module;
 		if (!LuaWrapper::checkField(L, 1, "_module", &module)) luaL_argerror(L, 1, "Module expected");
 		auto entity = LuaWrapper::checkArg<EntityRef>(L, 2);
 		auto clip = LuaWrapper::checkArg<Path>(L, 3);
-		auto is_3d = LuaWrapper::checkArg<bool>(L, 4);
-		LuaWrapper::push(L, 	module->play(entity, clip, is_3d));
+		LuaWrapper::push(L, 	module->play3D(entity, clip));
+		return 1;
+	}
+
+	int AudioModule_play2D(lua_State* L) {
+		LuaWrapper::checkTableArg(L, 1);
+		AudioModule* module;
+		if (!LuaWrapper::checkField(L, 1, "_module", &module)) luaL_argerror(L, 1, "Module expected");
+		auto clip = LuaWrapper::checkArg<Path>(L, 2);
+		LuaWrapper::push(L, 	module->play2D(clip));
 		return 1;
 	}
 	
@@ -2732,8 +2740,10 @@ namespace Lumix {
 			lua_setfield(L, -2, "__index");
 			lua_pushcfunction(L, lua_new_module, "new");
 			lua_setfield(L, -2, "new");
-			lua_pushcfunction(L, AudioModule_play, "play");
-			lua_setfield(L, -2, "play");
+			lua_pushcfunction(L, AudioModule_play3D, "play3D");
+			lua_setfield(L, -2, "play3D");
+			lua_pushcfunction(L, AudioModule_play2D, "play2D");
+			lua_setfield(L, -2, "play2D");
 			lua_pushcfunction(L, AudioModule_setMasterVolume, "setMasterVolume");
 			lua_setfield(L, -2, "setMasterVolume");
 			lua_pushcfunction(L, AudioModule_stop, "stop");
