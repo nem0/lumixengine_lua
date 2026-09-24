@@ -804,9 +804,9 @@ static int LUA_instantiatePrefab(lua_State* L) {
 	if (!prefab->isReady()) {
 		luaL_error(L, "Prefab '%s' is not ready, preload it.", prefab->getPath().c_str());
 	}
-	EntityMap entity_map(engine->getAllocator());
-	if (engine->instantiatePrefab(*world, *prefab, position, {0, 0, 0, 1}, {1, 1, 1}, entity_map)) {
-		LuaWrapper::pushEntity(L, entity_map.m_map[0], world);
+	EntityPtr root = engine->instantiatePrefab(*world, *prefab, position, {0, 0, 0, 1}, {1, 1, 1});
+	if (root.isValid()) {
+		LuaWrapper::pushEntity(L, root, world);
 		return 1;
 	}
 	luaL_error(L, "Failed to instantiate prefab");
