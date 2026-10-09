@@ -41,6 +41,8 @@ static const char* toString(InputEventType type) {
 		case InputEventType::TEXT_INPUT: return "text_input";
 		case InputEventType::DEVICE_ADDED: return "device_added";
 		case InputEventType::DEVICE_REMOVED: return "device_removed";
+		case InputEventType::KEYBOARD: return "keyboard";
+		case InputEventType::MOUSE_BUTTON: return "mouse_button";
 	}
 	ASSERT(false);
 	return "N/A";
@@ -1586,6 +1588,24 @@ struct LuaScriptModuleImpl final : LuaScriptModule {
 				lua_setfield(L, -2, "y_abs"); // [lua_event]
 				LuaWrapper::push(L, (u32)event.data.axis.axis); // [lua_event, axis.axis]
 				lua_setfield(L, -2, "axis"); // [lua_event]
+				break;
+			case InputEventType::KEYBOARD:
+				LuaWrapper::push(L, (u32)event.data.keyboard.keycode); // [lua_event, keyboard.keycode]
+				lua_setfield(L, -2, "keycode"); // [lua_event]
+				LuaWrapper::push(L, event.data.keyboard.down); // [lua_event, keyboard.down]
+				lua_setfield(L, -2, "down"); // [lua_event]
+				LuaWrapper::push(L, event.data.keyboard.is_repeat); // [lua_event, keyboard.is_repeat]
+				lua_setfield(L, -2, "is_repeat"); // [lua_event]
+				break;
+			case InputEventType::MOUSE_BUTTON:
+				LuaWrapper::push(L, (i32)event.data.mouse_button.button); // [lua_event, mouse_button.button]
+				lua_setfield(L, -2, "button"); // [lua_event]
+				LuaWrapper::push(L, event.data.mouse_button.down); // [lua_event, mouse_button.down]
+				lua_setfield(L, -2, "down"); // [lua_event]
+				LuaWrapper::push(L, event.data.mouse_button.x); // [lua_event, mouse_button.x]
+				lua_setfield(L, -2, "x"); // [lua_event]
+				LuaWrapper::push(L, event.data.mouse_button.y); // [lua_event, mouse_button.y]
+				lua_setfield(L, -2, "y"); // [lua_event]
 				break;
 			case InputEventType::TEXT_INPUT:
 				LuaWrapper::push(L, event.data.text.utf8); // [lua_event, utf8]
