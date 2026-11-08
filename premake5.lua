@@ -14,6 +14,25 @@ filter "system:linux"
 filter {}
 if _OPTIONS["dynamic-plugins"] then
 	links { "core", "engine" }
+else
+	-- the plugin is a part of a static library, the executables have to link Luau
+	local exes = {}
+	if not _OPTIONS["no-studio"] then table.insert(exes, "studio") end
+	if not _OPTIONS["no-app"] then table.insert(exes, "app") end
+	if _OPTIONS["with-tests"] then table.insert(exes, "tests") end
+
+	local luau_abs = path.join(_SCRIPT_DIR, "external/luau/lib/win")
+	for _, exe in ipairs(exes) do
+		project(exe)
+		filter "system:windows"
+			libdirs { luau_abs }
+			links { "Luau" }
+			postbuildcommands { '{COPYFILE} "' .. luau_abs .. '/Luau.dll" "%{cfg.targetdir}"' }
+		filter {}
+	end
+
+	-- the main script continues in the plugin's project
+	project "engine_merged"
 end
 
 
